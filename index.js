@@ -53,27 +53,15 @@ class Tree {
     traverse(this.root);
 
     function traverse(root) {
-      if (root === null) return null;
+      if (root === null) return node;
 
-      if (value > root.value) {
-        if (root.right === null) {
-          root.right = node;
-        } else if (value < root.right.value) {
-          node.right = root.right;
-          root.right = node;
-        } else {
-          traverse(root.right);
-        }
-      } else if (value < root.value) {
-        if (root.left === null) {
-          root.left = node;
-        } else if (value > root.left.value) {
-          node.left = root.right;
-          root.left = node;
-        } else {
-          traverse(root.left);
-        }
+      if (value < root.value) {
+        root.left = traverse(root.left);
+      } else {
+        root.right = traverse(root.right);
       }
+
+      return root;
     }
   }
 }
