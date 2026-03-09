@@ -64,6 +64,26 @@ class Tree {
       return root;
     }
   }
+
+  delete(value) {
+    traverse(this.root);
+
+    function traverse(root) {
+      if (root === null) return;
+
+      if (value < root.value) {
+        root.left = traverse(root.left);
+      } else {
+        root.right = traverse(root.right);
+      }
+
+      if (value === root.value) {
+        // TODO
+      }
+
+      return root;
+    }
+  }
 }
 
 module.exports = Tree;

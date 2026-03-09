@@ -83,4 +83,27 @@ describe("Balanced Binary Search Tree", () => {
     //            3    4     6     8     7
     expect(tree.root.right.right.right.left.value).toBe(7);
   });
+
+  it("removes a node from the tree", () => {
+    const newTree = new Tree([1, 2, 3]);
+    newTree.delete(3);
+    expect(newTree.includes(3)).toBe(false);
+  });
+
+  it("keeps the branches of the node that's being deleted", () => {
+    const newTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    //                 5
+    //            --------------
+    //            2            7
+    //        -------       -----------
+    //        1    3        6         8
+    //           -----          -------------
+    //        null    4         null        9
+
+    newTree.delete(2);
+    expect(newTree.includes(2)).toBe(false);
+    expect(newTree.includes(3)).toBe(true);
+    expect(newTree.includes(1)).toBe(true);
+    expect(newTree.includes(4)).toBe(true);
+  });
 });
