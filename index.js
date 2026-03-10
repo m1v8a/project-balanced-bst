@@ -1,89 +1,173 @@
-const { mergeSort } = require("./merge-sort");
+const Tree = require("./tree");
 
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function prettyPrint(node, prefix = "", isLeft = true) {
+  if (node === null || node === undefined) {
+    return;
   }
+
+  prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+  console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+  prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
 }
 
-class Tree {
-  constructor(arr) {
-    this.root = this.buildTree(arr, 0, arr.length - 1);
-  }
-
-  buildTree(arr, start, end) {
-    const sortedArr = [...new Set(mergeSort(arr))];
-
-    function build(arr, start, end) {
-      if (start > end) return null;
-
-      const mid = Math.floor((start + end) / 2);
-      const root = new Node(arr[mid]);
-
-      root.left = build(arr, start, mid - 1);
-      root.right = build(arr, mid + 1, end);
-
-      return root;
-    }
-
-    return build(sortedArr, start, end);
-  }
-
-  includes(value) {
-    function traverse(root) {
-      if (root === null) return false;
-
-      if (root.value === value) return true;
-
-      if (value < root.value) {
-        return traverse(root.left);
-      } else if (value > root.value) {
-        return traverse(root.right);
-      }
-    }
-
-    return traverse(this.root);
-  }
-
-  insert(value) {
-    const node = new Node(value);
-
-    traverse(this.root);
-
-    function traverse(root) {
-      if (root === null) return node;
-
-      if (value < root.value) {
-        root.left = traverse(root.left);
-      } else {
-        root.right = traverse(root.right);
-      }
-
-      return root;
-    }
-  }
-
-  delete(value) {
-    traverse(this.root);
-
-    function traverse(root) {
-      if (root === null) return;
-
-      if (value < root.value) {
-        root.left = traverse(root.left);
-      } else {
-        root.right = traverse(root.right);
-      }
-
-      if (value === root.value) {
-        // TODO
-      }
-
-      return root;
+function log(desc, root, callback, showDiff = true) {
+  if (!callback) {
+    console.log(desc);
+    prettyPrint(root);
+  } else {
+    if (showDiff) {
+      console.log(desc);
+      console.log("before");
+      prettyPrint(root);
+      callback();
+      console.log("after");
+      prettyPrint(root);
+    } else {
+      console.log(desc);
+      prettyPrint(root);
+      callback();
     }
   }
 }
 
-module.exports = Tree;
+// -------------------------------------------
+
+let tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log("build", tree.root);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log("insert(27)", tree.root, () => {
+  tree.insert(27);
+});
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log("insert already existing value (do nothing) / insert(9)", tree.root, () => {
+  tree.insert(9);
+});
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log("delete(7) / a leaf node", tree.root, () => {
+  tree.delete(7);
+});
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "delete a node that hava one leaf node (left) / delete(9)",
+  tree.root,
+  () => {
+    tree.delete(9);
+  },
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "delete a node that have one leaf node (right) / delete(5)",
+  tree.root,
+  () => {
+    tree.delete(5);
+  },
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "delete a node that hava both left and right leaf nodes / delete(67)",
+  tree.root,
+  () => {
+    tree.delete(67);
+  },
+);
+
+tree = new Tree([
+  1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324, 82, 52, 321, 322,
+]);
+log(
+  "delete a node that hava both left and right leaf nodes / delete(321)",
+  tree.root,
+  () => {
+    tree.delete(321);
+  },
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "levelOrderForeach",
+  tree.root,
+  () => {
+    let arr = [];
+    tree.levelOrderForEach((value) => {
+      arr.push(value);
+    });
+    console.log(arr);
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "levelOrderForeach",
+  tree.root,
+  () => {
+    let arr = [];
+    tree.levelOrderForEach((value) => {
+      arr.push(value);
+    });
+    console.log(arr);
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "levelOrderForeach / no callback given",
+  tree.root,
+  () => {
+    try {
+      tree.levelOrderForEach();
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "inorderForEach",
+  tree.root,
+  () => {
+    const arr = [];
+    tree.inOrderForEach((data) => {
+      arr.push(data);
+    });
+    console.log(arr);
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "preOrderForEach",
+  tree.root,
+  () => {
+    const arr = [];
+    tree.preOrderForEach((data) => {
+      arr.push(data);
+    });
+    console.log(arr);
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "postOrderForEach",
+  tree.root,
+  () => {
+    const arr = [];
+    tree.postOrderForEach((data) => {
+      arr.push(data);
+    });
+    console.log(arr);
+  },
+  false,
+);
