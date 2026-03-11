@@ -19,9 +19,8 @@ function log(desc, root, callback, showDiff = true) {
       console.log(desc);
       console.log("before");
       prettyPrint(root);
-      callback();
       console.log("after");
-      prettyPrint(root);
+      prettyPrint(callback());
     } else {
       console.log(desc);
       prettyPrint(root);
@@ -43,11 +42,13 @@ log("insert(27)", tree.root, () => {
 tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 log("insert already existing value (do nothing) / insert(9)", tree.root, () => {
   tree.insert(9);
+  return tree.root;
 });
 
 tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 log("delete(7) / a leaf node", tree.root, () => {
   tree.delete(7);
+  return tree.root;
 });
 
 tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
@@ -56,6 +57,7 @@ log(
   tree.root,
   () => {
     tree.delete(9);
+    return tree.root;
   },
 );
 
@@ -65,6 +67,7 @@ log(
   tree.root,
   () => {
     tree.delete(5);
+    return tree.root;
   },
 );
 
@@ -74,6 +77,7 @@ log(
   tree.root,
   () => {
     tree.delete(67);
+    return tree.root;
   },
 );
 
@@ -85,6 +89,7 @@ log(
   tree.root,
   () => {
     tree.delete(321);
+    return tree.root;
   },
 );
 
@@ -97,7 +102,7 @@ log(
     tree.levelOrderForEach((value) => {
       arr.push(value);
     });
-    console.log(arr);
+    console.log("result:", arr);
   },
   false,
 );
@@ -111,7 +116,7 @@ log(
     tree.levelOrderForEach((value) => {
       arr.push(value);
     });
-    console.log(arr);
+    console.log("result:", arr);
   },
   false,
 );
@@ -124,7 +129,7 @@ log(
     try {
       tree.levelOrderForEach();
     } catch (err) {
-      console.error(err);
+      console.error("result:", err);
     }
   },
   false,
@@ -139,7 +144,7 @@ log(
     tree.inOrderForEach((data) => {
       arr.push(data);
     });
-    console.log(arr);
+    console.log("result:", arr);
   },
   false,
 );
@@ -153,7 +158,7 @@ log(
     tree.preOrderForEach((data) => {
       arr.push(data);
     });
-    console.log(arr);
+    console.log("result:", arr);
   },
   false,
 );
@@ -167,7 +172,63 @@ log(
     tree.postOrderForEach((data) => {
       arr.push(data);
     });
-    console.log(arr);
+    console.log("result:", arr);
   },
   false,
 );
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+tree.insert(322);
+tree.insert(321);
+log(
+  "height(67)",
+  tree.root,
+  () => {
+    console.log("result:", tree.height(67));
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+tree.insert(322);
+tree.insert(321);
+tree.insert(320);
+log(
+  "depth(320)",
+  tree.root,
+  () => {
+    console.log("result:", tree.depth(320));
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+log(
+  "isBalanced(), should be true",
+  tree.root,
+  () => {
+    console.log("result:", tree.isBalanced());
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+tree.insert(24);
+tree.insert(25);
+log(
+  "isBalanced(), should be false",
+  tree.root,
+  () => {
+    console.log("result:", tree.isBalanced());
+  },
+  false,
+);
+
+tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+tree.insert(24);
+tree.insert(25);
+tree.insert(10);
+log("reBalance()", tree.root, () => {
+  tree.reBalance();
+  return tree.root;
+});

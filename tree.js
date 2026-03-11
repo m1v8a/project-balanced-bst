@@ -147,12 +147,73 @@ class Tree {
     }
   }
 
-  // TODO
-  height() {}
+  height(value) {
+    let h = 0;
+    let found = false;
+    const res = traverse(this.root) - h;
+    if (found) return res;
 
-  depth(value) {}
+    function traverse(root, count = 0) {
+      if (root === null) return count;
 
-  isBalanced() {}
+      if (value === root.data) {
+        found = true;
+        h = count;
+      }
+
+      return Math.max(
+        traverse(root.left, count + 1),
+        traverse(root.right, count + 1),
+      );
+    }
+  }
+
+  depth(value) {
+    let found = false;
+    const res = traverse(this.root);
+    if (found) return res;
+
+    function traverse(root, d = 0) {
+      if (root === null) return d;
+
+      if (value < root.data) {
+        return traverse(root.left, d + 1);
+      } else if (value > root.data) {
+        return traverse(root.right, d + 1);
+      } else {
+        return d;
+      }
+    }
+  }
+
+  isBalanced() {
+    return traverse(this.root) !== -1;
+
+    function traverse(root) {
+      if (root === null) return 0;
+
+      const lh = traverse(root.left);
+      const rh = traverse(root.right);
+
+      if (lh === -1 || rh === -1) {
+        return -1;
+      }
+
+      if (Math.abs(lh - rh) > 1) {
+        return -1;
+      }
+
+      return Math.max(lh, rh) + 1;
+    }
+  }
+
+  reBalance() {
+    const array = [];
+    this.inOrderForEach((value) => {
+      array.push(value);
+    });
+    this.root = this.build(array);
+  }
 }
 
 module.exports = Tree;
